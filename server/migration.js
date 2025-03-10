@@ -25,4 +25,5 @@ const migrateDb = async () => {
 };
 
 // Run the migration
+//migration adds the new columns
 migrateDb();

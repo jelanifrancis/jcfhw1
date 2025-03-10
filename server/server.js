@@ -43,7 +43,8 @@ app.post('/register', async (req, res) => {
 
   // Generate a 6-digit verification code
   const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-
+  console.log('Verification Code');
+  
   try {
     // NEW: Hash the password before storing
     const saltRounds = 10;
@@ -58,7 +59,7 @@ app.post('/register', async (req, res) => {
     // Send verification email
     const subject = "Verify Your Email";
     const content = `Your verification code: <b>${verificationCode}</b>`;
-    await sendEmail(email, subject, content);
+    //await sendEmail(email, subject, content);
     
     console.log("User registered successfully:", result.rows[0]);
     res.json({ 

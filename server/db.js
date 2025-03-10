@@ -17,6 +17,8 @@ const initDb = async () => {
         // Drop the table if it exists
         await pool.query(`DROP TABLE IF EXISTS users`);
 
+        //get erros drops if it exists already
+
         // MODIFIED: Added password field and is_verified field to users table
         // The password field will store hashed passwords for authentication
         // The is_verified field tracks whether the user has completed email verification
