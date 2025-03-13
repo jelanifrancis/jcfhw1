@@ -5,10 +5,11 @@ console.log("DATABASE_URL:", process.env.DATABASE_URL);
 // Setup the PostgreSQL pool
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: false 
-    //ssl:{
-    //    rejectUnauthorized: false
-    //}
+    //to test locally use line 9 to deploy comment out line 9 and use lines 10-12
+   //ssl: false 
+    ssl:{
+      rejectUnauthorized: false
+    }
 });
 
 // Function to initialize the database

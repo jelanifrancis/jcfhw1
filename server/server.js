@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const bcrypt = require('bcrypt'); // NEW: Import bcrypt for password hashing
+const crypto = require('crypto');
 const { pool, initDb } = require('./db');
 const sendEmail = require('./email');
 require('dotenv').config();
@@ -44,12 +44,19 @@ app.post('/register', async (req, res) => {
   // Generate a 6-digit verification code
   const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
   console.log('Verification Code');
-  
+
   try {
     // NEW: Hash the password before storing
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const salt = crypto.randomBytes(16).toString('hex'); // Generates a random salt
     
+    // Wrap the pbkdf2 hashing into a Promise so we can use async/await
+    const hashedPassword = await new Promise((resolve, reject) => {
+      crypto.pbkdf2(password, salt, 100000, 64, 'sha512', (err, derivedKey) => {
+        if (err) reject(err);
+        resolve(derivedKey.toString('hex'));
+      });
+    });
+
     // MODIFIED: Added password to database insert
     const result = await pool.query(
       'INSERT INTO users (name, email, verification_code, password) VALUES ($1, $2, $3, $4) RETURNING *',
@@ -115,7 +122,17 @@ app.post('/login', async (req, res) => {
     }
     
     // NEW: Verify password
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const storedPasswordHash = user.password; // Stored hash from DB
+    const salt = storedPasswordHash.slice(0, 32); // Extract the salt from the stored hash
+
+    // Hash the incoming password with the same salt
+    const passwordMatch = await new Promise((resolve, reject) => {
+      crypto.pbkdf2(password, salt, 100000, 64, 'sha512', (err, derivedKey) => {
+        if (err) reject(err);
+        resolve(derivedKey.toString('hex') === storedPasswordHash);
+      });
+    });
+
     if (!passwordMatch) {
       return res.status(401).json({ 
         success: false,
