@@ -6,7 +6,7 @@ function Dashboard({ name, email, onLogout }) {
   return (
     <div className="dashboard-container">
       <div className="dashboard">
-        <h2>Welcome to Fashion Helpline</h2> {/* Modified heading */}
+        <h2>Welcome!</h2> {/* Modified heading */}
         <div className="user-greeting">
           <h3>Hello, {name}! </h3>
           <p>You've successfully logged in with: {email}</p>

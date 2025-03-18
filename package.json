@@ -2,6 +2,7 @@
     "name": "lab1-registration-app",
     "version": "1.0.0",
     "dependencies": {
+        "@supabase/supabase-js": "^2.49.1",
         "axios": "^1.7.9",
         "bcrypt": "^5.1.1",
         "dotenv": "^16.4.7",
@@ -14,8 +15,8 @@
         "start": "node server/server.js",
         "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
     },
-"engines": {
-  "node": "18.20.6",
-  "npm": "10.8.2"
-}
+    "engines": {
+        "node": "18.20.6",
+        "npm": "10.8.2"
+    }
 }
